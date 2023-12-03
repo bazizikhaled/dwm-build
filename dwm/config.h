@@ -1,30 +1,26 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const unsigned int borderpx  = 3;        /* border pixel of windows */
-static const unsigned int gappx     = 9;        /* gaps between windows */
+static const unsigned int minwsz    = 20; 	/* Minimal heigt of a client for smfact */
+static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int gappx     = 6;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
+static const char *barlayout        = "tl|s";
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "Hack:size=15" };
-static const char dmenufont[]       = "Hack:size=15";
+static const char *fonts[]          = { "monospace:size=15" };
+static const char dmenufont[]       = "monospace:size=15";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const char col_red[]        = "#d82edb";
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-[SchemeNorm] = { "#4d4d4d", "#121212", "#333333" }, // Dark gray background, lighter text, and medium gray border
-[SchemeSel]  = { "#ffffff", "#005f87", "#ff0000" }, // White text on dark blue background, red border
-[SchemeStatus]  = { "#161236", "#161236", "#000000" }, // Dark gray text on dark blue background, black border
-[SchemeTagsSel]  = {  col_gray1, col_gray1, "#000000" }, // White text on red background, black border
-[SchemeTagsNorm]  = { "#000000", "#000000", "#000000" }, // Dark gray text on dark blue background, black border
-[SchemeInfoSel]  = { "#0b0c1a", "#0b0c1a", "#d82edb" }, // White text on red background, light purple border
-[SchemeInfoNorm]  = { "#4d4d4d", "#ff0000", "#000000" }, // Dark gray text on red background, black border
+	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
+	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
 };
 static const unsigned int alphas[][3]      = {
     /*               fg      bg        border*/
@@ -33,7 +29,12 @@ static const unsigned int alphas[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "🌐 ", "🤖 ", "📰 ","📎 ", "📁 ", "💬 "};
+static const char *tags[] = { "I", "II", "III", "IV"};
+static const char *tagsalt[] = { "1", "2", "3", "4"};
+static const int momentaryalttags = 0; /* 1 means alttags will show only when key is held down*/
+
+/* Lockfile */
+static char lockfile[] = "/tmp/dwm.lock";
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -46,6 +47,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
+static const float smfact     = 0.00; /* factor of tiled clients [0.00..0.95] */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
@@ -85,32 +87,55 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY|ControlMask,           XK_Left,      setmfact,       {.f = -0.05} },
-	{ MODKEY|ControlMask,           XK_Right,      setmfact,       {.f = +0.05} },
+	{ MODKEY|ControlMask,                       XK_h,      setmfact,       {.f = -0.05} },
+	{ MODKEY|ControlMask,                       XK_l,      setmfact,       {.f = +0.05} },
+	{ MODKEY|ControlMask,                       XK_Left,      setmfact,       {.f = -0.05} },
+	{ MODKEY|ControlMask,                       XK_Right,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,    {0} },
-	{ MODKEY,                       XK_w,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+	{ MODKEY,                       XK_agrave, view,           {.ui = ~0 } },
+	{ MODKEY|ShiftMask,             XK_agrave, tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
-	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
+	{ MODKEY,                       XK_semicolon, focusmon,    {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
-	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	TAGKEYS(                        XK_a,                      0)
-	TAGKEYS(                        XK_z,                      1)
-	TAGKEYS(                        XK_e,                      2)
-	TAGKEYS(                        XK_r,                      3)
-	TAGKEYS(                        XK_q,                      4)
-	TAGKEYS(                        XK_s,                      5)
+	{ MODKEY|ShiftMask,             XK_semicolon, tagmon,      {.i = +1 } },
+	TAGKEYS(                        XK_ampersand,              0)
+	TAGKEYS(                        XK_eacute,                 1)
+	TAGKEYS(                        XK_quotedbl,               2)
+	TAGKEYS(                        XK_apostrophe,             3)
+	TAGKEYS(                        XK_parenleft,              4)
+	TAGKEYS(                        XK_minus,                  5)
+	TAGKEYS(                        XK_egrave,                 6)
+	TAGKEYS(                        XK_underscore,             7)
+	TAGKEYS(                        XK_ccedilla,               8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
-    { MODKEY | ShiftMask, XK_p, spawn, SHCMD("maim -s | xclip -selection clipboard -t image/png -i") },
-     { MODKEY | ShiftMask | ControlMask, XK_p, spawn, SHCMD("maim -s ~/media/pictures/$(date +\"%H:%M\").png") },
- 		
+        
+	{ MODKEY | ShiftMask, XK_p, spawn, SHCMD("maim -s | xclip -selection clipboard -t image/png -i") },
+        { MODKEY | ShiftMask | ControlMask, XK_p, spawn, SHCMD("maim -s ~/$(date +\"%H:%M\").png") },
+	{ MODKEY|ControlMask|ShiftMask, XK_r,      quit,           {1} },
+	{ MODKEY|ControlMask,             XK_k,      setsmfact,      {.f = +0.05} },
+        { MODKEY|ControlMask,             XK_j,      setsmfact,      {.f = -0.05} },
+	{ MODKEY|ControlMask,             XK_Up,      setsmfact,      {.f = +0.05} },
+        { MODKEY|ControlMask,             XK_Down,      setsmfact,      {.f = -0.05} },
+	{ MODKEY,                       XK_n,      togglealttag,   {0} },
+
+	{ MODKEY | ShiftMask, XK_l, spawn, SHCMD("sh ~/projects/scripts/bookmark.sh -l") },
+	{ MODKEY | ShiftMask, XK_b, spawn, SHCMD("sh ~/projects/scripts/bookmark.sh -b") },
+	{ MODKEY | ShiftMask, XK_y, spawn, SHCMD("sh ~/projects/scripts/bookmark.sh -c") },
+	
+	{ MODKEY | ControlMask, XK_l, spawn, SHCMD("st -e lf") },
+	{ MODKEY | ControlMask, XK_d, spawn, SHCMD("firefox  https://discord.com/channels/@me/1094069761652035584") },
+	{ MODKEY | ControlMask, XK_y, spawn, SHCMD("firefox youtube.com") },
+	{ MODKEY | ControlMask, XK_f, spawn, SHCMD("firefox google.com") },
+        { MODKEY | ControlMask , XK_b, spawn, SHCMD("zathura ~/crnt/*.pdf") },
+        { MODKEY | ControlMask , XK_h, spawn, SHCMD("habit-tracker") },
+        { MODKEY | ControlMask , XK_t, spawn, SHCMD("errands") },
 
 };
 
@@ -120,7 +145,6 @@ static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkLtSymbol,          0,              Button1,        setlayout,      {0} },
 	{ ClkLtSymbol,          0,              Button3,        setlayout,      {.v = &layouts[2]} },
-	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
 	{ ClkStatusText,        0,              Button2,        spawn,          {.v = termcmd } },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        togglefloating, {0} },

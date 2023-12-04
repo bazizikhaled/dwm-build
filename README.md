@@ -4,8 +4,13 @@ My dwm build with dwmblocks status bar
 ![screen](dwm/screen.jpg)
 
 ## Taking Screenshots
-- **Clipboard**: Press `Alt + Shift + P` to take a screenshot and copy it to the clipboard.
-- **File**: Press `Alt + Shift + Control + P` to take a screenshot and save it as a file in the home directory with a timestamp.
+- **Clipboard**: Press `Alt + Shift + p` to take a screenshot and copy it to the clipboard.
+- **File**: Press `Alt + Shift + Control + p` to take a screenshot and save it as a file in the home directory with a timestamp.
+## screen rec 
+- **start**: Press `Alt + Shift +  o` .
+- **stop**: Press `Alt + Shift + Control + o` .
+- **File**: $HOME/output.mp4
+// in config.h change file path to where is dwm cloned in dwm/rec
 
 ## Key Bindings
 
@@ -50,4 +55,7 @@ My dwm build with dwmblocks status bar
   cp .dwm ~
   ```
 
+to do :
+- screen rec add notification with herbe and incorporate dmenu
+- notification system for everything 
 

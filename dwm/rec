@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Function to start recording
+start_recording() {
+    local output_file="$HOME/output.mp4"
+
+    # Use xrectsel to interactively select a screen region
+    REGION=$(xrectsel "%wx%h+%x+%y")
+
+    # Parse xrectsel output to get screen dimensions and offset
+    IFS='x+ ' read -r SCREEN_WIDTH SCREEN_HEIGHT OFFSET_X OFFSET_Y <<< "$REGION"
+
+    ffmpeg -framerate 30 -f x11grab -s "$SCREEN_WIDTH"x"$SCREEN_HEIGHT" -i :0.0+"$OFFSET_X","$OFFSET_Y" -preset ultrafast -c:v libx264 -qp 0 "$output_file" &
+    PID=$!
+
+    # Save PID to a file for later use
+    echo $PID > /tmp/record_pid
+}
+
+# Function to stop recording
+stop_recording() {
+    local pid_file="/tmp/record_pid"
+
+    if [ -f "$pid_file" ]; then
+        PID=$(cat "$pid_file")
+        kill -INT $PID
+        rm "$pid_file"
+    fi
+}
+
+# Check if the script was invoked with "start" or "stop" argument
+if [ "$1" == "start" ]; then
+    start_recording
+elif [ "$1" == "stop" ]; then
+    stop_recording
+fi

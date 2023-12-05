@@ -1,20 +1,31 @@
 # dwm-build
-My dwm build with dwmblocks status bar
+My dwm build 
 
 ![screen](dwm/screen.jpg)
 
-## Taking Screenshots
+
+## Features
+### Taking Screenshots
 - **Clipboard**: Press `Alt + Shift + p` to take a screenshot and copy it to the clipboard.
 - **File**: Press `Alt + Shift + Control + p` to take a screenshot and save it as a file in the home directory with a timestamp.
-## screen rec 
+### screen record 
 - **start**: Press `Alt + Shift +  o` .
 - **stop**: Press `Alt + Shift + Control + o` .
 - **File**: $HOME/output.mp4
 // in config.h change file path to where is dwm cloned in dwm/rec
 
-## Key Bindings
+### restart dwm without loging out 
+- Press (few times fast) `Alt + Shift + r`
 
-- **Launching Dmenu**: Press `Alt + P` to open Dmenu, allowing you to launch applications.
+
+## ~/.dwm auto start file
+// you can comment or delete what you dont like
+- **Vim**: switch of caps lock and escape for vim usage  
+- **mouse** xbanish for not displaying mouse cursor while typing
+
+### Basic Key Bindings
+
+- **Launching Dmenu**: Press `Alt + p` to open Dmenu, allowing you to launch applications.
 - **Launching Terminal**: Press `Alt + Shift + Enter` to open the terminal.
 - **Toggling Bar**: Press `Alt + B` to toggle the visibility of the top bar.
 - **Managing Windows**:
@@ -56,6 +67,6 @@ My dwm build with dwmblocks status bar
   ```
 
 to do :
-- screen rec add notification with herbe and incorporate dmenu
+- for screen rec : add notification with herbe and incorporate dmenu
 - notification system for everything 
-
+- 
